@@ -1,0 +1,39 @@
+    1  sudo snap install docker
+    2  sudo docker version
+    3  sudo snap info docker
+    4  sudo docker ps -a
+    5  sudo docker images
+    6  sudo snap install microk8s -classic
+    7  sudo snap install microk8s --classic
+    8  sudo microk8s kubectl version
+    9  sudo usermod -a -G microk8s $USER
+   10  sudo chown -f -R $USER ~/.kube
+   11  su - $USER
+   12  curl -k https://10.0.2.15:10443
+   13  sudo apt install curl
+   14  curl -k https://10.0.2.15:10443
+   15  sudo ufw allow from any to any port 10443 proto tcp
+   16  curl -k https://10.0.2.15:10443
+   17  kubectl apply -f postgres-config.yaml 
+   18  kubectl get configmap postgres-config
+   19  kubectl describe configmap postgres-config
+   20  echo admin123 | base64
+   21  kubectl apply -f postgres-secret.yaml
+   22  kubectl get secret postgres-secret
+   23  kubectl describe  secret postgres-secret
+   24  sudo mkdir -p /opt/postgre/data
+   25  kubectl apply -f postgres-storage.yaml 
+   26  kubectl get pv
+   27  kubectl get pvc
+   28  kubectl apply -f postgres-deployment.yaml
+   29  ll
+   30  kubectl apply -f postgres-deployment.yaml
+   31  kubectl get deployments
+   32  kubectl get pods -l app=postgres
+   33  kubectl apply -f postgres-service.yaml 
+   34  kubectl get svc
+   35  sudo apt install postgresql-client
+   36  psql -h localhost -U postgresadmin --password -p 30001 postgresdb
+   37  history
+   38  history 
+   39  history >history_commands.txt
