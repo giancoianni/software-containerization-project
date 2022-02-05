@@ -66,7 +66,7 @@ function RegistrationForm(props) {
     }
     const redirectToHome = () => {
         props.updateTitle('Home')
-        props.history.push('/details');
+        props.history.push('/details/'+state.email, {email: state.email});
     }
     const redirectToLogin = () => {
         props.updateTitle('Login')

@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useLocation, withRouter } from 'react-router-dom';
 import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../constants/apiConstants';
 import axios from 'axios'
 // help source: https://stackoverflow.com/questions/60664773/how-to-fetch-an-api-response-in-react
@@ -12,21 +12,24 @@ function Home(props) {
         address: "",
         mobile : ""
     })
+    const location = useLocation()
     useEffect(() => {
-        axios.get(API_BASE_URL+'/details', { headers: { 'token': localStorage.getItem(ACCESS_TOKEN_NAME) }})
+        axios.get(API_BASE_URL+'/details/'+location.state, { headers: { 'token': localStorage.getItem(ACCESS_TOKEN_NAME) }})
+            // https://stackoverflow.com/questions/44121069/how-to-pass-params-with-history-push-link-redirect-in-react-router-v4
         .then(function (response) {
             if(response.status !== 200){
               redirectToLogin()
             }
             else{
                 console.log(response.data);
-                this.setState({ state: response.data, error: null })
+                // this.setState({ state: response.data, error: null })
+                // state => setState(response.data)
             }
         })
         .catch(function (error) {
           redirectToLogin()
         });
-      })
+      }, [location])
     function redirectToLogin() {
     props.history.push('/login');
     }
@@ -45,15 +48,15 @@ function Home(props) {
             </tr>
           </thead>
           <tbody>
-            {/*{(state !== null) ? state.map(item => (*/}
-            {/*  <tr key={item.id}>*/}
-            {/*    <td>{item.email}</td>*/}
-            {/*    <td>{item.name}</td>*/}
-            {/*    <td>{item.dob}</td>*/}
-            {/*      <td>{item.address}</td>*/}
-            {/*      <td>{item.mobile}</td>*/}
-            {/*  </tr>*/}
-            {/*)) : null}*/}
+            {(state !== null) ? item => (
+              <tr>
+                <td>{item.email}</td>
+                <td>{item.name}</td>
+                <td>{item.dob}</td>
+                  <td>{item.address}</td>
+                  <td>{item.mobile}</td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>

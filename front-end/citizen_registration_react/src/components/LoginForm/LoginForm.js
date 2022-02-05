@@ -36,7 +36,7 @@ function LoginForm(props) {
                     redirectToHome();
                     props.showError(null)
                 }
-                else if(response.code === 204){
+                else if(response.status === 204){
                     props.showError("Username and password do not match");
                 }
                 else{
@@ -49,7 +49,8 @@ function LoginForm(props) {
     }
     const redirectToHome = () => {
         props.updateTitle('Home')
-        props.history.push('/details');
+        console.log("Email passed to home = " + state.email)
+        props.history.push('/details/'+state.email, state.email);
     }
     const redirectToRegister = () => {
         props.history.push('/register');

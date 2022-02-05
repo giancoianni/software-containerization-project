@@ -47,6 +47,7 @@ class PersonModel(db.Model):
 
 
 @app.route("/", methods=['GET'])
+@cross_origin()
 def hello_world():
     return "Hello World!"
 
@@ -79,7 +80,7 @@ def login():
 def return_response(return_data):
     response = flask.make_response(jsonify(return_data))
     response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    # response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
 
