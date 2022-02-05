@@ -24,7 +24,7 @@ function LoginForm(props) {
             "email":state.email,
             "password":state.password,
         }
-        axios.get(API_BASE_URL+'/login',  payload)
+        axios.post(API_BASE_URL+'/login',  payload)
             // axios.post(API_BASE_URL+'/login', { data: payload } , { headers: {"Access-Control-Allow-Origin" : "*" , }} )
             .then(function (response) {
                 if(response.status === 200){

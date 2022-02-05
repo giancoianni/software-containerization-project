@@ -46,18 +46,18 @@ class PersonModel(db.Model):
         return f"<Email-address = {self.email_address}>"
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def hello_world():
     return "Hello World!"
 
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 @cross_origin()
 def login():
     data = request.get_json(force=True)
     email_address = data['email']
     password = data['password']
-    app.logger.info("Values for email address %s and password %s is already registered" % (email_address,password))
+    app.logger.info("Values for email address %s and password %s is already registered" % (email_address, password))
     if email_address and password:
         existing_email_user = PersonModel.query.filter(
             PersonModel.email_address == email_address and PersonModel.password == password
@@ -65,18 +65,19 @@ def login():
         if existing_email_user:
             app.logger.info("User %s logged in successfully", email_address)
             return_data = {'email': email_address, 'message': "Login successful"}
-            return_response(return_data)
+            return return_response(return_data)
         else:
             app.logger.info("User having email-address %s is not registered/found", email_address)
             return_data = {'email': email_address, 'message': "Such a user is not registered/found"}
-            return_response(return_data)
+            return return_response(return_data)
     else:
         return_data = {'email': email_address, 'message': "User is not registered!"}
-        return_response(return_data)
+        app.logger.info("Values for email address %s and password %s is not available!" % (email_address, password))
+        return return_response(return_data)
 
 
 def return_response(return_data):
-    response = flask.Response(jsonify(return_data))
+    response = flask.make_response(jsonify(return_data))
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
@@ -96,27 +97,31 @@ def register():
         existing_email_user = PersonModel.query.filter(
             PersonModel.email_address == email_address and PersonModel.password == password
         ).first()
-    if existing_email_user:
-        app.logger.info("User %s is already registered", email_address)
-        return_data = {
-            "email": existing_email_user.email_address, "password": existing_email_user.password,
-            "name": existing_email_user.name, "dob": existing_email_user.dob,
-            "address": existing_email_user.address, "mobile": existing_email_user.mobile
-        }
-        return return_data
+        if existing_email_user:
+            app.logger.info("User %s is already registered", email_address)
+            return_data = {
+                "email": existing_email_user.email_address, "password": existing_email_user.password,
+                "name": existing_email_user.name, "dob": existing_email_user.dob,
+                "address": existing_email_user.address, "mobile": existing_email_user.mobile
+            }
+            # return return_response(return_data)
+        else:
+            entry = PersonModel(email_address, password, name, dob, address, mobile)
+            db.session.add(entry)
+            db.session.commit()
+            return_data = {"email": email_address, "password": password,
+                           "name": name, "dob": dob,
+                           "address": address, "mobile": mobile}
     else:
-        entry = PersonModel(email_address, password, name, dob, address, mobile)
-        db.session.add(entry)
-        db.session.commit()
-        return_data = {"email": email_address, "password": password,
-                       "name": name, "dob": dob,
-                       "address": address, "mobile": mobile}
-    return jsonify(return_data)
+        return_data = {'email': email_address, 'message': "User is not registered!"}
+        app.logger.info("Values for email address %s and password %s is not available!" % (email_address, password))
+        # return return_response(return_data)
+    return return_response(return_data)
 
 
-@app.route('/details', methods=['POST', 'GET'])
+@app.route('/details/<string:email>', methods=['GET'])
 @cross_origin()
-def handle_courses():
+def handle_registration(email):
     if request.method == 'POST':
         if request.is_json:
             data = request.get_json()
@@ -132,12 +137,12 @@ def handle_courses():
             return_data = {"email": data['email'], "password": data['password'],
                            "name": data['name'], "dob": data['dob'],
                            "address": data['address'], "mobile": data['mobile']}
-            return_response(return_data)
+            return return_response(return_data)
         else:
-            return {"error": "The request payload is not in JSON format"}
+            return return_response({"error": "The request payload is not in JSON format"})
     # https://stackabuse.com/using-sqlalchemy-with-flask-and-postgresql/
     elif request.method == 'GET':
-        persons = PersonModel.query.all()
+        persons = PersonModel.query.filter(PersonModel.email_address.like(email))
         results = [
             {
                 "email": person.email_address, "password": person.password,
@@ -145,7 +150,7 @@ def handle_courses():
                 "address": person.address, "mobile": person.mobile
             } for person in persons]
 
-        return results
+        return return_response(results)
 
 
 if __name__ == '__main__':

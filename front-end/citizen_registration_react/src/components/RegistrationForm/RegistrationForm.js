@@ -8,6 +8,7 @@ function RegistrationForm(props) {
   const [state , setState] = useState({
         email : "",
         password : "",
+        confirmPassword: "",
         name : "",
         dob : "",
         address: "",
@@ -29,7 +30,8 @@ function RegistrationForm(props) {
         }
     }
     const sendDetailsToServer = () => {
-        if(state.email.length && state.password.length && state.name.length && state.dob.length && state.address.length && state.mobile.length) {
+        if(state.email.length && state.password.length && state.confirmPassword && state.name.length && state.dob.length
+            && state.address.length && state.mobile.length) {
             props.showError(null);
             const payload={
                 "email":state.email,
@@ -102,6 +104,8 @@ function RegistrationForm(props) {
                         className="form-control"
                         id="confirmPassword"
                         placeholder="Confirm Password"
+                           value={state.confirmPassword}
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="form-group text-left">
