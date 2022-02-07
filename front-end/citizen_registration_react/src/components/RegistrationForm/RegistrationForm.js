@@ -52,8 +52,12 @@ function RegistrationForm(props) {
                         redirectToHome();
                         // props.payload = payload;
                         props.showError(null)
-                    } else{
-                        props.showError("Such a user is not registered/found");
+                    }
+                    else if(response.status === 202){
+                    props.showError("An account with the entered email-address and password is already registered!");
+                }
+                    else{
+                        props.showError("The entered values in the form are not recognised!");
                     }
                 })
                 .catch(function (error) {

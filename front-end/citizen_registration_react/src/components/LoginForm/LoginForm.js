@@ -36,11 +36,14 @@ function LoginForm(props) {
                     redirectToHome();
                     props.showError(null)
                 }
-                else if(response.status === 204){
-                    props.showError("Username and password do not match");
+                else if(response.status === 201){
+                    props.showError("This email-address is not valid/registered!");
+                }
+                else if(response.status === 202){
+                    props.showError("The password entered by you is not correct! Please try again with a valid password.");
                 }
                 else{
-                    props.showError("Username does not exists");
+                    props.showError("Please enter valid username and password!");
                 }
             })
             .catch(function (error) {
