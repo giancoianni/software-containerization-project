@@ -1,0 +1,7 @@
+Kubernetes deployment cleanup commands
+---------------------------------------------
+
+kubectl delete --all deployments --namespace default
+kubectl delete --all pods --namespace default
+kubectl delete pv -n default postgres-pv-volume --force
+kubectl delete pvc -n default postgres-pv-volume-claim --force

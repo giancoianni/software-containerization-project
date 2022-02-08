@@ -1,0 +1,13 @@
+# reference - https://loft.sh/blog/kubernetes-horizontal-pod-autoscaling/
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: flaskapi-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: flaskapi
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 20
