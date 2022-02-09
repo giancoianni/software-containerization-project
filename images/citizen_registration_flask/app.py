@@ -8,7 +8,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 POSTGRES_USER = 'postgres'
 POSTGRES_PASSWORD = 'postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres:5432/postgres'
 # engine:[//[user[:password]@][host]/[dbname]]
 # engine -> postgresql
 # user -> postgres
