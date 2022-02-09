@@ -1,3 +1,4 @@
+import ssl
 import flask
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
@@ -53,7 +54,9 @@ class PersonModel(db.Model):
     def __repr__(self):
         return f"<Email-address = {self.email_address}>"
 
+
 db.create_all()
+
 
 @app.route("/", methods=['GET'])
 @cross_origin()
@@ -99,7 +102,8 @@ def login():
         return_data = [{"email": email_address, "name": "",
                         "dob": "", "address": "",
                         "mobile": ""}]
-        app.logger.info("The user has not provided sufficient credentials: email - %s and password - %s!" % (email_address, password))
+        app.logger.info("The user has not provided sufficient credentials: email - %s and password - %s!" % (
+        email_address, password))
         return return_response(return_data, 203)
 
 
@@ -186,4 +190,6 @@ def handle_registration(email):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    context.load_cert_chain('cert.crt', 'key.key')
+    app.run(debug=True, ssl_context=context)
