@@ -6,7 +6,9 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/postgres'
+POSTGRES_USER = 'postgres'
+POSTGRES_PASSWORD = 'postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/postgres'
 # engine:[//[user[:password]@][host]/[dbname]]
 # engine -> postgresql
 # user -> postgres
@@ -18,7 +20,12 @@ app.secret_key = 'secret string'
 
 db = SQLAlchemy(app)
 db.init_app(app)
-db.create_all()
+
+
+def recreate_db():
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
 
 
 # probable help links: https://www.digitalocean.com/community/tutorials/how-to-use-a-postgresql-database-in-a-flask-application
@@ -46,6 +53,7 @@ class PersonModel(db.Model):
     def __repr__(self):
         return f"<Email-address = {self.email_address}>"
 
+db.create_all()
 
 @app.route("/", methods=['GET'])
 @cross_origin()

@@ -7,7 +7,6 @@ metadata:
         type: local
 spec:
     storageClassName: microk8s-hostpath
-    volumeName: postgres-pv
     accessModes:
         - ReadWriteMany
     resources:
