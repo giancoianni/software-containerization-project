@@ -1,0 +1,25 @@
+Kubernetes web client deployment commands
+-----------------------------------------------
+
+# React application deployment:
+---------------------------------
+cd citizen_registration_react/
+docker build -t react . 
+docker build . -t 10.0.2.15:32000/react:registry
+docker push 10.0.2.15:32000/react
+kubectl create -f react-deployment.yaml
+kubectl create -f react-service.yaml
+
+
+
+
+
+Kubernetes deployment cleanup commands
+---------------------------------------------
+
+
+kubectl delete --all pods --namespace default
+kubectl delete --all services --namespace default
+kubectl delete pvc --all --force --namespace default
+kubectl delete pv --all --force --namespace default
+kubectl delete --all deployments --namespace default

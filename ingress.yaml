@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microk8s-ingress
+  annotations:
+spec:
+  rules:
+  - host: group18.project
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: react
+            port:
+              number: 3000
+      - path: /login
+        pathType: Prefix
+        backend:
+          service:
+            name: flaskapi
+            port:
+              number: 5000
+      - path: /register
+        pathType: Prefix
+        backend:
+          service:
+            name: flaskapi
+            port:
+              number: 5000
+      - path: /details
+        pathType: Prefix
+        backend:
+          service:
+            name: flaskapi
+            port:
+              number: 5000
