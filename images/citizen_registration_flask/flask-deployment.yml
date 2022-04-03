@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: flaskapi
-          image: flaskapi
-          imagePullPolicy: Never
+          image: 10.0.2.15:32000/flaskweb
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           resources:
