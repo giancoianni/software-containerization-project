@@ -1,0 +1,7 @@
+# react-application deployment
+cd citizen_registration_react/
+docker build -t react . 
+docker build . -t 10.0.2.15:32000/react:registry
+docker push 10.0.2.15:32000/react
+kubectl create -f react-deployment.yaml
+kubectl create -f react-service.yaml
