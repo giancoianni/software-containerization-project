@@ -4,32 +4,37 @@ Kubernetes web client deployment commands
 # React application deployment:
 ---------------------------------
 cd citizen_registration_react/
-docker build -t react . 
-docker build . -t 10.0.2.15:32000/react:registry
-docker push 10.0.2.15:32000/react
+# docker build -t react . 
+#docker build . -t 10.0.2.15:32000/react:v1
+#docker push 10.0.2.15:32000/react:v1
+docker build . -t localhost:32000/react:v1
+docker push localhost:32000/react:v1
+
 kubectl create -f react-deployment.yaml
 kubectl create -f react-service.yaml
 cd ..
 
 
-
 # Flask API application deployment:
 ---------------------------------
 cd citizen_registration_flask/
-docker build -t flaskweb . 
+# docker build -t flaskweb . 
 docker build . -t 10.0.2.15:32000/flaskweb:registry
 docker push 10.0.2.15:32000/flaskweb
+# docker build . -t localhost:32000/flaskweb:v1
+# docker push localhost:32000/flaskweb:v1
 kubectl create -f flask-deployment.yml
 kubectl create -f flask-service.yml
 cd ..
 
 
-
 # Postgres database deployment:
 ---------------------------------
 cd database/
-kubectl apply -f postgres-persistent-volume.yml
-kubectl apply -f postgres-persistent-volume-claim.yml
+
+#kubectl apply -f postgres-persistent-volume.yml
+#kubectl apply -f postgres-persistent-volume-claim.yml
+kubectl apply -f postgres-storage.yaml
 kubectl apply -f postgres-configmap.yaml
 kubectl apply -f postgres-secret.yaml
 kubectl apply -f postgres-deployment.yaml
@@ -37,16 +42,13 @@ kubectl create -f postgres-service.yaml
 cd ..
 
 
-
 Kubernetes deployment cleanup commands
 ---------------------------------------------
 kubectl delete --all pods --force --namespace default
+kubectl delete --all services --force --namespace default
 kubectl delete --all deployments --force --namespace default
 kubectl delete pvc --all --force --namespace default
 kubectl delete pv --all --force --namespace default
-kubectl delete --all services --force --namespace default
-
-
 
 
 # Kubernetes Dashboard & Token
@@ -58,7 +60,7 @@ revisedtoken=$(kubectl -n kubernetes-dashboard get secret | grep default| grep d
 echo $revisedtoken
 kubectl -n kubernetes-dashboard describe secret $revisedtoken
 Token: ------> 
-eyJhbGciOiJSUzI1NiIsImtpZCI6InNSdkJvT281T01CM016UG9zVTFXVW5PZFdGMUk0VFhfMnEzdGlOM1BlUzAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZWZhdWx0LXRva2VuLXR0a2drIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRlZmF1bHQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIwMDMzODQxNC03ZGZkLTRkODctYWE2NC1jZmIyZmI1Y2MwNWEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6ZGVmYXVsdCJ9.nx02dBQX32hm4S0mUfrnubj0aax5_TVUbhgtZkdxOJn8PEGXlU6xt8lyBVOn8Bna0dTG1_vCOyT4P1eUeqG1XYULcT2_XQg7A1Fv8eVXqyQCsPfEyC9s2jkUM7nMLgkz0HX4JiVDbh0X73ZLEdu2E9ar1d4ThYeQ5MKhGpJdLtcFM-hAob_L2h9cT6A8YaqmhGMNT4MgldhRA7M6AadsbYlaw7PQBFqh-i-2-GSInnlfMqJz_s7VDbT8dQS8t6aBRbZa19ErvzwkVmKjT46MB8vZG7NSNi3ZIZchutmQu1OnLY6OR7xM3E3WXMxenLsMhC2y8Lq9A9cmayMAbKkJcA
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjhRMmkxYmRacFljVi1jY1F4bjZfdEZOMGd4TW56c3RkcU5KamdTMy1VVE0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZWZhdWx0LXRva2VuLTlna3hyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRlZmF1bHQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI2NDFmZmZlNi05Y2EyLTRiNDUtOGVkMS02Y2MzYWM2YmViMmMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6ZGVmYXVsdCJ9.fSYuFwMaRMQtC4_diIpULVO87r-w-Tuzz-enH-0DO9WmSdnE0vAIppDPeNuQYQJsEGZCYIeAsJf6SY9TSGOnv84WQuaunV-Io9gF4TMokHsgq362MdDJwWQxKB23sehj887G6HAokjX3gxp6f21x6JqoYWMyDCny9e3_tDIlQVe-B9K3uPQDi37Z5qwjCLQb9Ct98vtYi3YlkgHtuVcUUcpKDQlD7kzEURn2N1omIv1A_xSIu5JV1FcV7fIGoaEbUcaCOyq4wYwtmhFHFOsWt284f4ON5Y02O2nT0lpXOL7-_eXjGtpaseadMzMVvTZfEYJe3YwBoaf-qCddqNR-zg
 
 Admin user created:
 kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
@@ -69,15 +71,24 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6InNSdkJvT281T01CM016UG9zVTFXVW5PZFdGMUk0VFhfMnEzdGlO
 Default namespace:
 eyJhbGciOiJSUzI1NiIsImtpZCI6InNSdkJvT281T01CM016UG9zVTFXVW5PZFdGMUk0VFhfMnEzdGlOM1BlUzAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tOHM0d2wiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjdiODY4YTAyLTc3OTAtNDFjOS05OTZmLTQ2NWNmYzUyOGZkYiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.QVgem0Ni5NdOTO3jwe_7iE9d9pux9TtJpgZhR6sncfk4eeLc621XPC4GF_Km0r2S6KfAcKatIG1dDeCxfw5opAiHudItu7FfUsP__WLZIMIdbIHHnpeL0rV6gvUEYGyXUJy_mCsiWXbgomMXb75uDWLHcHfytKlpvWpkohy681ksQTaBdfxGtzNMAczxs2qcOAMSWrq5ySszJBCYK-e2gajbc6EJm2pw92E0vpQR0L2dnVp2pLVUB0jGktGDTx8sruIwhOEve0vL1k7Vsn9WpHogggSnj8HEi-c8fQu_SmtHo3wFNr6zsRyHtB_-sADI4n6W3zWb09o2-xSTuk4LSg
 
-
+kubectl -n ${NAMESPACE} describe secret $(kubectl -n ${NAMESPACE} get secret | (echo "$_") | awk '{print $1}') | grep token: | awk '{print $2}'\n
 
 
 kubectl taint nodes group18-virtualbox node.kubernetes.io/not-ready:NoSchedule-
 
+sudo systemctl status snap.docker.dockerd.service
+sudo systemctl stop snap.microk8s.daemon-kubelet && systemctl start snap.microk8s.daemon-kubelet
 
-# Events
+
+# Events & Logs
 --------------------
 kubectl get events  --sort-by='.metadata.creationTimestamp'
+kubectl logs --namespace=kube-system -l k8s-app=kube-dns
+sudo iptables -t nat -L -n -v
+sudo journalctl -u snap.microk8s.daemon-kubelet.service
+sudo journalctl -u snap.microk8s.daemon-apiserver.service
+sudo journalctl -u snap.microk8s.daemon-proxy.service
+
 
 Removing finalizers
 ---------------------------

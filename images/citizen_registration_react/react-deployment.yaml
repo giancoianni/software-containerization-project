@@ -16,8 +16,9 @@ spec:
     spec:
       containers:
         - name: react
-          image: react
-          imagePullPolicy: Never
+          image: localhost:32000/react:v1
+          #image: 10.0.2.15:32000/react:v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 443
           resources:
